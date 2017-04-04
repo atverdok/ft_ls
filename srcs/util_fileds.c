@@ -68,7 +68,7 @@ char		*get_date(struct stat statv)
 	date = ft_strnew(12);
 	ft_memcpy(&time_f, &statv.st_mtime, sizeof(statv.st_mtime));
 	date_f = ctime(&time_f);
-	if (time_n - time_f < 15778476 && time_n - time_f > 30)
+	if (time_n - time_f < 15778476 && time_f - time_n < 30)
 		ft_memmove(date, (date_f + 4), 12);
 	else
 	{
