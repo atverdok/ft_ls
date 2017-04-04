@@ -6,7 +6,7 @@
 /*   By: atverdok <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/01 14:42:50 by atverdok          #+#    #+#             */
-/*   Updated: 2017/04/02 12:34:11 by atverdok         ###   ########.fr       */
+/*   Updated: 2017/04/04 09:48:47 by atverdok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,10 @@ void				print_perror(void *value);
 t_main				*create_main_struct(void);
 
 void				parse_options(char *str, t_main	*main_struct);
+void				make_parce_options(int *i, int argc, char **argv,
+		t_main *main_struct);
+t_boolean			parse_argument(int *i_err, char **argv,
+							t_main *main_struct, t_stack **tmp);
 
 t_fileds_l			*get_stat_file(const char *path, struct dirent	*dp);
 void				get_make_stat(t_main *main_struct, t_node **head,
@@ -125,7 +129,7 @@ void				get_make_stat(t_main *main_struct, t_node **head,
 char				*make_full_path(const char *path, struct dirent	*dp);
 t_node				*ft_list_dir(const char *path, t_main *main_struct);
 void				get_rdev_or_size(t_fileds_l *fileds_l, struct stat stat_f);
-char				*set_target(char *path_name, struct stat sb);
+char				*set_target(char *path_name);
 char				*get_date(struct stat statv);
 char				*get_permission(int st_mode);
 char				*get_file_type(int st_mode);
@@ -141,5 +145,8 @@ size_t				get_len_stack(t_stack *stack);
 void				make_queue(t_main *main_struct, t_stack *tmp);
 void				make_priint_stack(t_main *main_struct,
 		t_stack *stack_head, int err);
+
+t_fileds_l			*get_stat_single_file(char *path, struct stat stat_f);
+char				*ft_itoa_off_t(off_t nbr);
 
 #endif

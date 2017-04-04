@@ -18,7 +18,8 @@ SRCS =         main.c\
 			   util_print.c\
 			   util_print_l.c\
 			   util_stack.c\
-			   util_queue.c
+			   util_queue.c\
+			   ft_itoa_off_t.c
 
 OBJ = $(SRCS:.c=.o)
 

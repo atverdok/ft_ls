@@ -53,7 +53,7 @@ char		*get_permission(int st_mode)
 	if (st_mode & S_ISGID)
 		amode[5] = 's';
 	if (st_mode & S_ISVTX)
-		amode[8] = 't';
+		amode[8] = (st_mode & S_IXOTH) ? 't' : 'T';
 	return (amode);
 }
 
@@ -68,7 +68,7 @@ char		*get_date(struct stat statv)
 	date = ft_strnew(12);
 	ft_memcpy(&time_f, &statv.st_mtime, sizeof(statv.st_mtime));
 	date_f = ctime(&time_f);
-	if (time_n - time_f < 15778476)
+	if (time_n - time_f < 15778476 && time_n - time_f > 30)
 		ft_memmove(date, (date_f + 4), 12);
 	else
 	{
@@ -78,17 +78,15 @@ char		*get_date(struct stat statv)
 	return (date);
 }
 
-char		*set_target(char *path_name, struct stat sb)
+char		*set_target(char *path_name)
 {
 	char *target_name;
 
-	target_name = (char *)ft_memalloc((size_t)(sb.st_size + 1));
-	if (readlink(path_name, target_name, (size_t)sb.st_size) != -1)
-	{
-		return (ft_strdup(target_name));
-	}
-	else
-		return (NULL);
+	target_name = (char *)ft_memalloc(32);
+	if (readlink(path_name, target_name, 32) != -1)
+		return (target_name);
+	ft_strdel(&target_name);
+	return (NULL);
 }
 
 void		get_rdev_or_size(t_fileds_l *fileds_l, struct stat stat_f)
@@ -101,6 +99,6 @@ void		get_rdev_or_size(t_fileds_l *fileds_l, struct stat stat_f)
 	}
 	else
 	{
-		fileds_l->st_size = ft_itoa((int)stat_f.st_size);
+		fileds_l->st_size = ft_itoa_off_t(stat_f.st_size);
 	}
 }

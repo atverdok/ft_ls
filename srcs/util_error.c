@@ -14,7 +14,7 @@
 
 void	usage_error(void)
 {
-	ft_putstr_fd("usage: ls [-lmnopqrstuwx1] [file ...]\n", 2);
+	ft_putstr_fd("usage: ./ft_ls [-lartR] [file ...]\n", 2);
 }
 
 void	illegal_options_error(char *str)

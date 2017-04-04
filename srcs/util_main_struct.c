@@ -85,7 +85,29 @@ t_fileds_l	*get_stat_file(const char *path, struct dirent	*dp)
 	if (fileds_l->file_type[0] == 'd')
 		fileds_l->ful_path = ft_strdup(path);
 	if ((stat_f.st_mode & S_IFMT) == S_IFLNK)
-		fileds_l->target_name = set_target(ft_strdup(path), stat_f);
+		fileds_l->target_name = set_target((char *)path);
+	fileds_l->group_name = ft_strdup(getgrgid(stat_f.st_gid)->gr_name);
+	return (fileds_l);
+}
+
+t_fileds_l	*get_stat_single_file(char *path, struct stat stat_f)
+{
+	t_fileds_l *fileds_l;
+
+	fileds_l = (t_fileds_l *)ft_memalloc(sizeof(t_fileds_l));
+	fileds_l->d_name = path;
+	fileds_l->file_type = get_file_type(stat_f.st_mode);
+	fileds_l->permission = get_permission(stat_f.st_mode);
+	fileds_l->st_nlink = ft_itoa((int)stat_f.st_nlink);
+	fileds_l->author = ft_strdup(getpwuid(stat_f.st_uid)->pw_name);
+	get_rdev_or_size(fileds_l, stat_f);
+	fileds_l->date = get_date(stat_f);
+	fileds_l->st_blocks = stat_f.st_blocks;
+	fileds_l->st_mtimespec = stat_f.st_mtimespec;
+	if (fileds_l->file_type[0] == 'd')
+		fileds_l->ful_path = ft_strdup(path);
+	if ((stat_f.st_mode & S_IFMT) == S_IFLNK)
+		fileds_l->target_name = set_target(path);
 	fileds_l->group_name = ft_strdup(getgrgid(stat_f.st_gid)->gr_name);
 	return (fileds_l);
 }

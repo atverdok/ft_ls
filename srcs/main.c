@@ -6,7 +6,7 @@
 /*   By: atverdok <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/01 11:21:41 by atverdok          #+#    #+#             */
-/*   Updated: 2017/04/01 12:01:08 by atverdok         ###   ########.fr       */
+/*   Updated: 2017/04/04 09:43:09 by atverdok         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,19 @@ void		print_path(char *path, t_boolean *flag, int err, size_t len_stack)
 		print_path_l(path);
 }
 
+void		print_in_files(t_main *main_struct, t_stack *stack_head, int *err,
+		t_boolean *flag)
+{
+	if (main_struct->head)
+	{
+		check_max_size_and_size(main_struct);
+		make_print(main_struct, &stack_head);
+		main_struct->head = NULL;
+		(*err)++;
+		*flag = FALSE;
+	}
+}
+
 void		make_priint_stack(t_main *main_struct, t_stack *stack_head, int err)
 {
 	char		*path;
@@ -43,6 +56,7 @@ void		make_priint_stack(t_main *main_struct, t_stack *stack_head, int err)
 	size_t		len_stack;
 
 	flag = TRUE;
+	print_in_files(main_struct, stack_head, &err, &flag);
 	len_stack = get_len_stack(stack_head);
 	path = pop_stack(&stack_head);
 	while (path)
@@ -61,25 +75,26 @@ void		make_priint_stack(t_main *main_struct, t_stack *stack_head, int err)
 
 int			main(int argc, char **argv)
 {
-	int			i;
 	t_main		*main_struct;
 	t_stack		*tmp;
+	int			i_err[2];
 
 	tmp = NULL;
 	main_struct = create_main_struct();
-	i = 0;
-	while (++i < argc)
+	i_err[0] = 0;
+	i_err[1] = 0;
+	make_parce_options(&i_err[0], argc, argv, main_struct);
+	while (i_err[0] < argc)
 	{
-		if (argv[i][0] == '-' && argv[i][1])
-			parse_options(argv[i], main_struct);
-		else
-			break ;
+		if (parse_argument(i_err, argv, main_struct, &tmp))
+		{
+			print_perror((void *)argv[i_err[0]]);
+			i_err[1]++;
+		}
+		i_err[0]++;
 	}
-	while (i < argc)
-	{
-		sorted_insert_stack(&tmp, create_stack_node(ft_strdup(argv[i])));
-		i++;
-	}
-	make_queue(main_struct, tmp);
+	if (!i_err[1])
+		sorted_insert_stack(&tmp, create_stack_node(ft_strdup(".")));
+	make_priint_stack(main_struct, tmp, i_err[1]);
 	return (0);
 }
