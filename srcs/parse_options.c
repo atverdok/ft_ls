@@ -57,18 +57,18 @@ t_boolean	parse_argument(int *i_err, char **argv,
 	t_fileds_l	*fileds_l;
 	t_node		*head;
 
-	head = NULL;
+	head = (main_struct->head) ? main_struct->head : NULL;
 	if (!lstat(argv[i_err[0]], &stat_f))
 	{
 		if ((fileds_l = get_stat_single_file(ft_strdup(argv[i_err[0]]), stat_f))
-				!= NULL && ((stat_f.st_mode & S_IFMT) != S_IFDIR))
+				!= NULL && ((stat_f.st_mode & S_IFMT) != S_IFDIR)
+				&& main_struct->options->l)
 		{
-			if (main_struct->options && main_struct->options->t)
-				sorted_insert(&head, new_node(fileds_l),
-						main_struct->options->r, cmp_date);
-			else
-				sorted_insert(&head, new_node(fileds_l),
-						main_struct->options->r, cmp_name);
+			(main_struct->options && main_struct->options->t)
+			? sorted_insert(&head, new_node(fileds_l),
+							main_struct->options->r, cmp_date)
+			: sorted_insert(&head, new_node(fileds_l),
+							main_struct->options->r, cmp_name);
 			main_struct->head = head;
 		}
 		else
