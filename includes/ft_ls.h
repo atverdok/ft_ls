@@ -118,9 +118,9 @@ void				print_perror(void *value);
 t_main				*create_main_struct(void);
 
 void				parse_options(char *str, t_main	*main_struct);
-void				make_parce_options(int *i, int argc, char **argv,
-		t_main *main_struct);
-t_boolean			parse_argument(int *i_err, char **argv,
+char				*make_parce_options(t_stack **tmp_arg,
+								t_main *main_struct);
+t_boolean			parse_argument(int *i_err, char *arg,
 							t_main *main_struct, t_stack **tmp);
 
 t_fileds_l			*get_stat_file(const char *path, struct dirent	*dp);
@@ -137,12 +137,10 @@ char				*get_file_type(int st_mode);
 int					cmp_name(t_fileds_l *e1, t_fileds_l *e2, t_boolean r);
 int					cmp_date(t_fileds_l *e1, t_fileds_l *e2, t_boolean r);
 
-void				push_queue_bak(t_stack **head, char *path);
 void				sorted_insert_stack(t_stack **head, t_stack *new_node);
 t_stack				*create_stack_node(char *path);
 size_t				get_len_stack(t_stack *stack);
 
-void				make_queue(t_main *main_struct, t_stack *tmp);
 void				make_priint_stack(t_main *main_struct,
 		t_stack *stack_head, int err);
 

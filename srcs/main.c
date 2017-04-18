@@ -25,7 +25,7 @@ void		print_path(char *path, t_boolean *flag, int err, size_t len_stack)
 {
 	if (*flag)
 	{
-		if (len_stack > 1 || err)
+		if (len_stack > 1 || err > 1)
 		{
 			ft_putstr(path);
 			ft_putendl(":");
@@ -76,25 +76,28 @@ void		make_priint_stack(t_main *main_struct, t_stack *stack_head, int err)
 int			main(int argc, char **argv)
 {
 	t_main		*main_struct;
-	t_stack		*tmp;
-	int			i_err[2];
+	t_stack		*tmp_arg[2];
+	int			err;
+	char		*arg;
 
-	tmp = NULL;
+	tmp_arg[0] = NULL;
+	tmp_arg[1] = NULL;
 	main_struct = create_main_struct();
-	i_err[0] = 0;
-	i_err[1] = 0;
-	make_parce_options(&i_err[0], argc, argv, main_struct);
-	while (i_err[0] < argc)
+	err = 0;
+	while (argc-- > 1)
+		sorted_insert_stack(&tmp_arg[1], create_stack_node(argv[argc]));
+	arg = make_parce_options(&tmp_arg[1], main_struct);
+	while (arg)
 	{
-		if (parse_argument(i_err, argv, main_struct, &tmp))
+		if (parse_argument(&err, arg, main_struct, &tmp_arg[0]))
 		{
-			print_perror((void *)argv[i_err[0]]);
-			i_err[1]++;
+			print_perror((void *)arg);
+			err++;
 		}
-		i_err[0]++;
+		arg = pop_stack(&tmp_arg[1]);
 	}
-	if (!i_err[1])
-		sorted_insert_stack(&tmp, create_stack_node(ft_strdup(".")));
-	make_priint_stack(main_struct, tmp, i_err[1]);
+	if (!err)
+		sorted_insert_stack(&tmp_arg[0], create_stack_node(ft_strdup(".")));
+	make_priint_stack(main_struct, tmp_arg[0], err);
 	return (0);
 }

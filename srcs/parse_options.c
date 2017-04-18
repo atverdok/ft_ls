@@ -38,19 +38,24 @@ void		parse_options(char *str, t_main *main_struct)
 	}
 }
 
-void		make_parce_options(int *i, int argc, char **argv,
+char		*make_parce_options(t_stack **tmp_arg,
 		t_main *main_struct)
 {
-	while (++(*i) < argc)
+	char *arg;
+
+	arg = pop_stack(tmp_arg);
+	while (arg)
 	{
-		if (argv[*i][0] == '-' && argv[*i][1])
-			parse_options(argv[*i], main_struct);
+		if (arg[0] == '-' && arg[1])
+			parse_options(arg, main_struct);
 		else
 			break ;
+		arg = pop_stack(tmp_arg);
 	}
+	return (arg);
 }
 
-t_boolean	parse_argument(int *i_err, char **argv,
+t_boolean	parse_argument(int *err, char *arg,
 		t_main *main_struct, t_stack **tmp)
 {
 	struct stat stat_f;
@@ -58,11 +63,10 @@ t_boolean	parse_argument(int *i_err, char **argv,
 	t_node		*head;
 
 	head = (main_struct->head) ? main_struct->head : NULL;
-	if (!lstat(argv[i_err[0]], &stat_f))
+	if (!lstat(arg, &stat_f))
 	{
-		if ((fileds_l = get_stat_single_file(ft_strdup(argv[i_err[0]]), stat_f))
-				!= NULL && ((stat_f.st_mode & S_IFMT) != S_IFDIR)
-				&& main_struct->options->l)
+		if ((fileds_l = get_stat_single_file(ft_strdup(arg), stat_f))
+				!= NULL && ((stat_f.st_mode & S_IFMT) != S_IFDIR))
 		{
 			(main_struct->options && main_struct->options->t)
 			? sorted_insert(&head, new_node(fileds_l),
@@ -73,8 +77,8 @@ t_boolean	parse_argument(int *i_err, char **argv,
 		}
 		else
 			sorted_insert_stack(tmp,
-					create_stack_node(ft_strdup(argv[i_err[0]])));
-		i_err[1]++;
+					create_stack_node(ft_strdup(arg)));
+		(*err)++;
 		return (FALSE);
 	}
 	return (TRUE);

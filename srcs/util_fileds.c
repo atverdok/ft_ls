@@ -82,8 +82,8 @@ char		*set_target(char *path_name)
 {
 	char *target_name;
 
-	target_name = (char *)ft_memalloc(32);
-	if (readlink(path_name, target_name, 32) != -1)
+	target_name = (char *)ft_memalloc(256);
+	if (readlink(path_name, target_name, 256) != -1)
 		return (target_name);
 	ft_strdel(&target_name);
 	return (NULL);
